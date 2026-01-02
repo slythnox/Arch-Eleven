@@ -1,4 +1,4 @@
-# AI Core - Local AI Assistant System
+# Eleven Nexus - Local AI Assistant System
 
 A production-ready, modular local AI assistant system designed for portability and future Android/Termux deployment.
 
