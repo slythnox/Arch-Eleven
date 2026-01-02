@@ -1,0 +1,34 @@
+{
+  "stt": {
+    "engine": "whisper",
+    "enabled": false,
+    "config": {
+      "modelSize": "base",
+      "language": "en",
+      "endpoint": "http://localhost:9000/transcribe"
+    }
+  },
+  "tts": {
+    "engine": "piper",
+    "enabled": false,
+    "config": {
+      "voice": "en_US-lessac-medium",
+      "speed": 1.0,
+      "endpoint": "http://localhost:9001/synthesize"
+    }
+  },
+  "voiceProfiles": {
+    "assistant": {
+      "name": "Assistant Voice",
+      "pitch": 1.0,
+      "speed": 1.0,
+      "volume": 0.8
+    },
+    "professional": {
+      "name": "Professional Voice",
+      "pitch": 0.9,
+      "speed": 0.95,
+      "volume": 0.9
+    }
+  }
+}

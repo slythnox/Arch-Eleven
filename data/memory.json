@@ -1,0 +1,89 @@
+{
+  "messages": [
+    {
+      "role": "user",
+      "content": "Hello! Can you hear me?",
+      "timestamp": 1767350229841,
+      "id": "msg_1767350229841_90oe83ni6"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm currently running in offline mode. The LLM backend is not available. Please check that your local LLM server is running at the configured endpoint.\n\nYou asked: \"You are a helpful and friendly AI assistant.\n\nRecent conversation:\nuser: Hello! Can you hear me?\n\nUs...\"",
+      "timestamp": 1767350229926,
+      "id": "msg_1767350229926_i8p3db4sm"
+    },
+    {
+      "role": "user",
+      "content": "Test animation states",
+      "timestamp": 1767350880306,
+      "id": "msg_1767350880306_533lme395"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm currently running in offline mode. The LLM backend is not available. Please check that your local LLM server is running at the configured endpoint.\n\nYou asked: \"You are a helpful and friendly AI assistant.\n\nRecent conversation:\nuser: Hello! Can you hear me?\nass...\"",
+      "timestamp": 1767350880309,
+      "id": "msg_1767350880309_ip4a55jw0"
+    },
+    {
+      "role": "user",
+      "content": "hello",
+      "timestamp": 1767361700348,
+      "id": "msg_1767361700348_ypqmvni4g"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767361704614,
+      "id": "msg_1767361704614_h1rxf5iay"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767361711405,
+      "id": "msg_1767361711405_xec9u0ice"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767362244187,
+      "id": "msg_1767362244187_fwp3w9k6g"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767362246726,
+      "id": "msg_1767362246726_sptfddrsa"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767362252085,
+      "id": "msg_1767362252085_gfcy9cdo4"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767362978745,
+      "id": "msg_1767362978746_86yhr0ab2"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767362982947,
+      "id": "msg_1767362982947_8xwrtcchs"
+    },
+    {
+      "role": "user",
+      "content": "hi",
+      "timestamp": 1767364305415,
+      "id": "msg_1767364305415_1rq5alblm"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! It's great to see you back. How can I help you today?",
+      "timestamp": 1767364312370,
+      "id": "msg_1767364312370_8bncnb4fc"
+    }
+  ],
+  "lastUpdated": "2026-01-02T14:31:52.370Z"
+}
