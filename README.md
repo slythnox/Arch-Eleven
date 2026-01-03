@@ -346,6 +346,4 @@ MIT License - feel free to modify and use for any purpose.
 
 This is a standalone project. Feel free to fork and adapt to your needs.
 
-## Credits
 
-Built as a production-ready, portable local AI assistant core.
