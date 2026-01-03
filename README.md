@@ -1,6 +1,6 @@
-# AI Core - Local AI Assistant System
+# Arch Eleven - Local AI Assistant System
 
-A production-ready, modular local AI assistant system designed for portability and future Android/Termux deployment.
+Modular local AI assistant system designed for portability and future Android/Termux deployment.
 
 ## Features
 
