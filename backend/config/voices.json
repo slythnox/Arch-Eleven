@@ -1,0 +1,34 @@
+{
+  "stt": {
+    "engine": "whisper",
+    "enabled": true,
+    "config": {
+      "modelSize": "tiny",
+      "language": "en",
+      "endpoint": "http://localhost:8000/transcribe"
+    }
+  },
+  "tts": {
+    "engine": "edge-tts",
+    "enabled": true,
+    "config": {
+      "endpoint": "http://localhost:8000/synthesize",
+      "voice": "en-US-AriaNeural",
+      "speed": "+0%"
+    }
+  },
+  "voiceProfiles": {
+    "assistant": {
+      "name": "Assistant Voice",
+      "pitch": 1.0,
+      "speed": 1.0,
+      "volume": 0.8
+    },
+    "professional": {
+      "name": "Professional Voice",
+      "pitch": 0.9,
+      "speed": 0.95,
+      "volume": 0.9
+    }
+  }
+}
