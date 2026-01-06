@@ -334,7 +334,6 @@ AI: [Displays recent messages]
 - [ ] Tool confirmation UI
 - [ ] File browser in workspace
 - [ ] Mobile-optimized touch UI
-- [ ] Offline model management
 - [ ] RAG (Retrieval-Augmented Generation)
 - [ ] Multi-modal support (images, audio)
 
