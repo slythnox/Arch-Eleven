@@ -119,4 +119,3 @@ Files will be generated in `/app/ai-core/workspace/`
 - **Production-ready**: Error handling, reconnection logic, state management
 - **Future-proof**: STT/TTS stubs ready for voice integration
 
-Enjoy your local AI assistant! 🚀
