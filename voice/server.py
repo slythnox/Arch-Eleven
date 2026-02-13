@@ -21,14 +21,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup_event():
-    print("Voice server ready! (TTS only - STT disabled)")
+    print("Voice server ready! (TTS only)")
 
-@app.post("/transcribe")
-async def transcribe(file: UploadFile = File(...)):
-    raise HTTPException(
-        status_code=501, 
-        detail="STT is temporarily disabled. Install openai-whisper manually if needed: pip install openai-whisper"
-    )
+
 
 @app.post("/synthesize")
 async def synthesize(
