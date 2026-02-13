@@ -22,6 +22,10 @@ class UIController {
     this.audioEnabled = true;
 
     this.init();
+
+    // Audio Queue System
+    this.audioQueue = [];
+    this.isPlayingAudio = false;
   }
 
   init() {
@@ -117,7 +121,12 @@ class UIController {
           break;
 
         case 'ai_audio':
+          // Legacy support (should use chunks now)
           this.playAudio(data.audio, data.format);
+          break;
+
+        case 'ai_audio_chunk':
+          this.queueAudioChunk(data);
           break;
 
         case 'error':
@@ -243,8 +252,10 @@ class UIController {
   updateState(state) {
     this.elements.stateText.textContent = state.toUpperCase();
 
-    // Update bubble animation
-    if (window.bubbleAnimator) {
+    // Only update bubble animation if NOT currently speaking audio
+    // This allows the frontend to maintain "speaking" state during playback
+    // even if backend reports "idle"
+    if (window.bubbleAnimator && !this.isPlayingAudio) {
       window.bubbleAnimator.setState(state);
     }
   }
@@ -257,16 +268,52 @@ class UIController {
   }
 
   /**
+   * Queue audio chunk to play
+   */
+  queueAudioChunk(data) {
+    if (!this.audioEnabled) return;
+
+    this.audioQueue.push(data);
+    console.log(`[UI] Audio chunk queued. Index: ${data.index}, Queue length: ${this.audioQueue.length}`);
+
+    // Try to process queue
+    // Use a small timeout to let the stack clear and prevent recursion depth issues
+    setTimeout(() => this.processAudioQueue(), 0);
+  }
+
+  /**
+   * Process the audio queue
+   */
+  processAudioQueue() {
+    // If already playing or queue empty, do nothing
+    if (this.isPlayingAudio || this.audioQueue.length === 0) {
+      console.log(`[UI] processAudioQueue ignored. Playing: ${this.isPlayingAudio}, Queue: ${this.audioQueue.length}`);
+      return;
+    }
+
+    const chunk = this.audioQueue.shift();
+    console.log(`[UI] Playing chunk ${chunk.index}. Remaining: ${this.audioQueue.length}`);
+
+    this.playAudio(chunk.audio, 'mp3', () => {
+      // Callback when audio finishes
+      // Reset flag immediately to allow next chunk
+      this.isPlayingAudio = false;
+      this.processAudioQueue();
+    });
+  }
+
+  /**
    * Play audio from base64 data
    */
-  playAudio(base64Audio, format = 'mp3') {
+  playAudio(base64Audio, format = 'mp3', onEnded = null) {
     if (!this.audioEnabled) {
-      console.log('[UI] Audio playback skipped (disabled by user)');
+      if (onEnded) onEnded();
       return;
     }
 
     try {
-      console.log('[UI] Attempting to play audio...');
+      this.isPlayingAudio = true;
+      if (window.bubbleAnimator) window.bubbleAnimator.setState('speaking');
 
       // Convert base64 to blob
       const binaryString = atob(base64Audio);
@@ -275,37 +322,51 @@ class UIController {
         bytes[i] = binaryString.charCodeAt(i);
       }
 
-      console.log('[UI] Audio data size:', bytes.length, 'bytes');
-
       const blob = new Blob([bytes], { type: `audio/${format}` });
       const audioUrl = URL.createObjectURL(blob);
 
       // Create and play audio element
       const audio = new Audio(audioUrl);
 
-      audio.addEventListener('loadeddata', () => {
-        console.log('[UI] Audio loaded successfully');
-      });
-
       audio.play()
         .then(() => {
-          console.log('[UI] Audio playback started');
+          // Playback started
         })
         .catch(error => {
           console.error('[UI] Audio playback failed:', error);
-          this.addSystemMessage('Audio playback blocked. Click anywhere to enable audio.', 'info');
+          this.addSystemMessage('Audio playback blocked.', 'info');
+          this.cleanupAudio();
+          if (onEnded) onEnded();
         });
 
       // Clean up URL after playing
       audio.onended = () => {
-        console.log('[UI] Audio playback ended');
         URL.revokeObjectURL(audioUrl);
+
+        // If queue is empty, we are done speaking
+        if (this.audioQueue.length === 0) {
+          this.cleanupAudio();
+        }
+
+        if (onEnded) onEnded();
       };
 
     } catch (error) {
       console.error('[UI] Audio decode error:', error);
-      this.addSystemMessage('Audio decode failed', 'error');
+      // Ensure we don't get stuck in playing state if decode fails
+      this.cleanupAudio();
+      if (onEnded) onEnded();
     }
+  }
+
+  /**
+   * Reset audio state
+   */
+  cleanupAudio() {
+    this.isPlayingAudio = false;
+    // Revert to whatever state the backend says (usually idle)
+    // We can infer idle here since we finished speaking
+    if (window.bubbleAnimator) window.bubbleAnimator.setState('idle');
   }
 
   /**

@@ -1,13 +1,4 @@
 {
-  "stt": {
-    "engine": "whisper",
-    "enabled": true,
-    "config": {
-      "modelSize": "tiny",
-      "language": "en",
-      "endpoint": "http://localhost:8000/transcribe"
-    }
-  },
   "tts": {
     "engine": "edge-tts",
     "enabled": true,

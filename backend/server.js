@@ -56,9 +56,7 @@ wss.on('connection', (ws) => {
           await handleTextInput(ws, data.content);
           break;
 
-        case 'voice_input':
-          await handleVoiceInput(ws, data.content);
-          break;
+
 
         case 'get_state':
           ws.send(JSON.stringify({
@@ -118,26 +116,50 @@ async function handleTextInput(ws, userInput) {
     }));
 
     // Try to generate and send audio
+    // Stream audio in chunks
     try {
-      const audioBuffer = await tts.synthesize(response.text);
+      // Simple splitting by sentence endings (. ! ? plus newlines)
+      // This regex looks for sentence terminators followed by space or end of string
+      const sentences = response.text.match(/[^.!?\n]+[.!?\n]+|[^.!?\n]+$/g) || [response.text];
 
-      // Send audio as base64
-      ws.send(JSON.stringify({
-        type: 'ai_audio',
-        audio: audioBuffer.toString('base64'),
-        format: 'mp3',
-        timestamp: Date.now()
-      }));
+
+      // PARALLEL GENERATION: Start generating all chunks immediately
+      const chunkPromises = sentences.map(async (sentence, i) => {
+        const trimmed = sentence.trim();
+        if (trimmed.length < 2) return null;
+
+        try {
+          const buffer = await tts.synthesize(trimmed);
+          return {
+            audio: buffer.toString('base64'),
+            index: i,
+            isLast: i === sentences.length - 1
+          };
+        } catch (e) {
+          console.warn(`[TTS] Generation failed for chunk ${i}:`, e.message);
+          return null;
+        }
+      });
+
+      // Send chunks IN ORDER as they become available
+      // (We await them sequentially to ensure FIFO order for the frontend queue)
+      for (let i = 0; i < chunkPromises.length; i++) {
+        const result = await chunkPromises[i];
+        if (result) {
+          ws.send(JSON.stringify({
+            type: 'ai_audio_chunk',
+            ...result,
+            timestamp: Date.now()
+          }));
+        }
+      }
     } catch (ttsError) {
       console.warn('[TTS] Audio generation failed:', ttsError.message);
-      // Continue without audio - text was already sent
     }
 
-    // Return to idle after speaking
-    setTimeout(() => {
-      stateManager.setState('idle');
-      broadcastState(ws);
-    }, 2000);
+    // Set state back to idle (frontend handles visual duration)
+    stateManager.setState('idle');
+    broadcastState(ws);
 
   } catch (error) {
     console.error('Text input error:', error);
@@ -151,16 +173,7 @@ async function handleTextInput(ws, userInput) {
   }
 }
 
-/**
- * Handle voice input (stub for future implementation)
- */
-async function handleVoiceInput(ws, audioData) {
-  // STT stub - will be implemented later
-  ws.send(JSON.stringify({
-    type: 'info',
-    message: 'Voice input not yet implemented. Use text mode.'
-  }));
-}
+
 
 /**
  * Broadcast current state to client
